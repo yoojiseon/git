@@ -243,6 +243,18 @@ def test_yahoo_fallback_builds_spread(monkeypatch):
     idx = pd.bdate_range("2025-01-01", periods=300)
     fake = {"^TNX": 4.2, "^IRX": 3.8, "^VIX": 18.0, "KRW=X": 1400.0}
     monkeypatch.setattr(data, "yahoo_series", lambda sym, years=10: pd.Series(fake[sym], index=idx))
+    monkeypatch.setattr(data, "bls_series", lambda sid: pd.Series(1.0, index=pd.date_range("2024-01-01", periods=30, freq="MS")))
     out, notes = data.macro_fallback({})
-    assert set(out) == {"DGS10", "VIXCLS", "DEXKOUS", "T10Y3M"}
+    assert set(out) == {"DGS10", "VIXCLS", "DEXKOUS", "T10Y3M", "CPIAUCSL", "UNRATE"}
     assert out["T10Y3M"].iloc[-1] == pytest.approx(0.4)
+
+
+def test_bls_parsing(monkeypatch):
+    payload = {"status": "REQUEST_SUCCEEDED", "Results": {"series": [{"data": [
+        {"year": "2026", "period": "M09", "value": "325.1"},
+        {"year": "2026", "period": "M08", "value": "324.0"},
+        {"year": "2025", "period": "M13", "value": "300"},
+    ]}]}}
+    monkeypatch.setattr(data, "_fetch", lambda url, **kw: __import__("json").dumps(payload).encode())
+    s = data.bls_series("CUSR0000SA0")
+    assert list(s.values) == [324.0, 325.1]

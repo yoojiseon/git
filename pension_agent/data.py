@@ -28,7 +28,8 @@ CACHE_DIR = Path(__file__).resolve().parent.parent / ".cache"
 HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; pension-agent/0.1)"}
 
 # 이 도메인들에 접속할 수 있어야 데이터가 수집됩니다.
-REQUIRED_HOSTS = ["fred.stlouisfed.org", "fchart.stock.naver.com", "news.google.com", "query1.finance.yahoo.com"]
+REQUIRED_HOSTS = ["fred.stlouisfed.org", "fchart.stock.naver.com", "news.google.com",
+                  "query1.finance.yahoo.com", "api.bls.gov"]
 
 
 class DataError(RuntimeError):
@@ -112,9 +113,40 @@ def yahoo_series(symbol: str, years: int = 10) -> pd.Series:
     return pd.Series(close, index=ts, dtype="float64").dropna().rename(symbol)
 
 
+# ---------------------------------------------------------------- 미국 노동통계국 BLS (FRED 대체, 키 불필요·최근 3년)
+BLS_FALLBACK = {
+    "CPIAUCSL": "CUSR0000SA0",   # 소비자물가지수(계절조정)
+    "UNRATE": "LNS14000000",     # 실업률
+}
+
+
+def bls_series(series_id: str) -> pd.Series:
+    url = f"https://api.bls.gov/publicAPI/v1/timeseries/data/{series_id}"
+    payload = json.loads(_fetch(url))
+    if payload.get("status") != "REQUEST_SUCCEEDED":
+        raise DataError(f"BLS {series_id}: {payload.get('message')}")
+    rows = payload["Results"]["series"][0]["data"]
+    pts = {
+        pd.Timestamp(int(r["year"]), int(r["period"][1:]), 1): float(r["value"])
+        for r in rows
+        if r["period"].startswith("M") and r["period"] != "M13" and r["value"] not in ("-", "")
+    }
+    if not pts:
+        raise DataError(f"BLS {series_id}: 데이터 없음")
+    return pd.Series(pts).sort_index().rename(series_id)
+
+
 def macro_fallback(have: dict[str, pd.Series]) -> tuple[dict[str, pd.Series], list[str]]:
     """FRED에서 못 받은 지표를 야후 시세로 채웁니다. 장단기 금리차는 10년(^TNX) - 13주(^IRX)."""
     out, notes = {}, []
+    for sid, bls_id in BLS_FALLBACK.items():
+        if sid in have:
+            continue
+        try:
+            out[sid] = bls_series(bls_id).rename(sid)
+            notes.append(f"{sid} → 미국 노동통계국(BLS) {bls_id}로 대체")
+        except (DataError, KeyError, IndexError, ValueError) as exc:
+            notes.append(f"{sid} 대체 실패: {exc}")
     for sid, sym in YAHOO_FALLBACK.items():
         if sid in have:
             continue
