@@ -12,6 +12,7 @@ from __future__ import annotations
 import datetime as dt
 import hashlib
 import io
+import json
 import re
 import sys
 import time
@@ -27,7 +28,7 @@ CACHE_DIR = Path(__file__).resolve().parent.parent / ".cache"
 HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; pension-agent/0.1)"}
 
 # 이 도메인들에 접속할 수 있어야 데이터가 수집됩니다.
-REQUIRED_HOSTS = ["fred.stlouisfed.org", "fchart.stock.naver.com", "news.google.com"]
+REQUIRED_HOSTS = ["fred.stlouisfed.org", "fchart.stock.naver.com", "news.google.com", "query1.finance.yahoo.com"]
 
 
 class DataError(RuntimeError):
@@ -64,9 +65,9 @@ def _fetch(url: str, *, timeout: int = 15, retries: int = 2, use_cache: bool = T
 
 
 # ---------------------------------------------------------------- FRED
-def fred_series(series_id: str, start: str = "2010-01-01") -> pd.Series:
+def fred_series(series_id: str, start: str = "2015-01-01") -> pd.Series:
     url = f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={series_id}&cosd={start}"
-    df = pd.read_csv(io.BytesIO(_fetch(url)))
+    df = pd.read_csv(io.BytesIO(_fetch(url, timeout=40)))
     if df.shape[1] < 2:
         raise DataError(f"FRED {series_id}: 예상과 다른 응답")
     values = pd.to_numeric(df.iloc[:, 1], errors="coerce")
@@ -77,11 +78,63 @@ def fred_series(series_id: str, start: str = "2010-01-01") -> pd.Series:
 def fred_many(series_ids: list[str]) -> tuple[dict[str, pd.Series], list[str]]:
     out, errors = {}, []
     for sid in series_ids:
+        if not out and len(errors) >= 2:  # 처음부터 연속 실패 → FRED 접속 불가로 보고 나머지는 건너뜀
+            errors.append(f"{sid}: FRED 접속이 안 되어 건너뜀")
+            continue
         try:
             out[sid] = fred_series(sid)
         except (DataError, ValueError) as exc:
             errors.append(f"{sid}: {exc}")
     return out, errors
+
+
+# ---------------------------------------------------------------- 야후 파이낸스 (FRED 대체)
+# FRED에 접속이 안 될 때 시장 가격으로 대신 계산할 수 있는 지표
+YAHOO_FALLBACK = {
+    "DGS10": "^TNX",      # 미국 10년 국채금리(%)
+    "VIXCLS": "^VIX",     # VIX
+    "DEXKOUS": "KRW=X",   # 원·달러 환율
+}
+
+
+def yahoo_series(symbol: str, years: int = 10) -> pd.Series:
+    url = (
+        f"https://query1.finance.yahoo.com/v8/finance/chart/{urllib.parse.quote(symbol)}"
+        f"?range={years}y&interval=1d"
+    )
+    payload = json.loads(_fetch(url))
+    try:
+        res = payload["chart"]["result"][0]
+        ts = pd.to_datetime(res["timestamp"], unit="s").normalize()
+        close = res["indicators"]["quote"][0]["close"]
+    except (KeyError, IndexError, TypeError) as exc:
+        raise DataError(f"야후 {symbol}: 예상과 다른 응답") from exc
+    return pd.Series(close, index=ts, dtype="float64").dropna().rename(symbol)
+
+
+def macro_fallback(have: dict[str, pd.Series]) -> tuple[dict[str, pd.Series], list[str]]:
+    """FRED에서 못 받은 지표를 야후 시세로 채웁니다. 장단기 금리차는 10년(^TNX) - 13주(^IRX)."""
+    out, notes = {}, []
+    for sid, sym in YAHOO_FALLBACK.items():
+        if sid in have:
+            continue
+        try:
+            out[sid] = yahoo_series(sym).rename(sid)
+            notes.append(f"{sid} → 야후 {sym}로 대체")
+        except DataError as exc:
+            notes.append(f"{sid} 대체 실패: {exc}")
+    if "T10Y3M" not in have:
+        try:
+            ten = out.get("DGS10") if "DGS10" in out else have.get("DGS10")
+            ten = ten if ten is not None else yahoo_series("^TNX")
+            bill = yahoo_series("^IRX")
+            spread = (ten - bill).dropna()
+            if not spread.empty:
+                out["T10Y3M"] = spread.rename("T10Y3M")
+                notes.append("T10Y3M → 야후 ^TNX - ^IRX로 대체")
+        except DataError as exc:
+            notes.append(f"T10Y3M 대체 실패: {exc}")
+    return out, notes
 
 
 # ---------------------------------------------------------------- 네이버 금융

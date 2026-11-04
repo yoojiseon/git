@@ -12,7 +12,7 @@ import yaml
 
 from . import allocator as al
 from . import ledger
-from .data import REQUIRED_HOSTS, DataError, fred_many, latest_news, names_match, naver_history
+from .data import REQUIRED_HOSTS, DataError, fred_many, latest_news, macro_fallback, names_match, naver_history
 from .macro import FRED_SERIES, analyze
 from .report import ReportInput, render, snapshot
 
@@ -68,7 +68,11 @@ def run(month: str | None = None, with_news: bool = True, out_dir: Path | None =
         raise DataError("현금성 ETF(357870) 시세가 없어 계산할 수 없습니다.")
 
     series, fred_err = fred_many(list(FRED_SERIES))
-    warnings += [f"FRED {x}" for x in fred_err]
+    if fred_err:
+        warnings.append(f"FRED에서 {len(fred_err)}개 지표를 받지 못했습니다: " + ", ".join(e.split(":")[0] for e in fred_err))
+        extra, notes = macro_fallback(series)
+        series.update(extra)
+        warnings += [f"대체 데이터: {n}" for n in notes]
     macro = analyze(series) if series else None
 
     tac_cfg = profile["tactical"]

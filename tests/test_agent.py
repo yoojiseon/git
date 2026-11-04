@@ -237,3 +237,12 @@ def test_ledger_rotates_purchases(tmp_path, monkeypatch):
     assert len(set().union(*bought)) > len(bought[0])  # 종목이 돌아가며 채워짐
     h = yaml.safe_load(hold.read_text(encoding="utf-8"))
     assert h["applied_reports"] == ["2099-01", "2099-02"]
+
+
+def test_yahoo_fallback_builds_spread(monkeypatch):
+    idx = pd.bdate_range("2025-01-01", periods=300)
+    fake = {"^TNX": 4.2, "^IRX": 3.8, "^VIX": 18.0, "KRW=X": 1400.0}
+    monkeypatch.setattr(data, "yahoo_series", lambda sym, years=10: pd.Series(fake[sym], index=idx))
+    out, notes = data.macro_fallback({})
+    assert set(out) == {"DGS10", "VIXCLS", "DEXKOUS", "T10Y3M"}
+    assert out["T10Y3M"].iloc[-1] == pytest.approx(0.4)

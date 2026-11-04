@@ -71,7 +71,7 @@ etfs:
     watch: AI 설비투자 전망, 반도체 재고 사이클, 수출 규제
 
   - code: "251350"
-    name: KODEX 선진국MSCI World
+    name: KODEX MSCI선진국
     asset_class: 선진국 주식
     irp: risky
     roles: [tactical]
