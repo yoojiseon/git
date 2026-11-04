@@ -1,0 +1,220 @@
+# IRP에서 매수할 후보 ETF 목록 (국내 상장, 레버리지·인버스·선물형 제외)
+#
+# 필드 설명
+#   code        : 종목코드 6자리
+#   name        : 종목명. 실행할 때 네이버 금융 종목명과 대조하고, 다르면 추천에서 빼고 경고합니다.
+#   asset_class : 자산군
+#   irp         : risky(위험자산, 합계 70% 한도) / safe(안전자산)
+#   roles       : core(장기 바구니) / tactical(단기 후보) / proxy(과거 데이터 보충용, 추천 안 함)
+#   core_weight : 장기 바구니 안에서의 기본 비중(%) — 경제 상황에 따라 agent가 조정
+#   proxy       : 상장 기간이 짧을 때 과거 수익률을 대신 채워 넣을 종목
+#   desc        : 초보자용 설명
+#   watch       : 공부할 때 확인할 포인트
+#
+# 주의: IRP 매수 가능 여부와 위험/안전 분류는 증권사 시스템 기준이 최종입니다.
+#       처음 매수하기 전에 증권사 앱의 '퇴직연금 매수 가능 상품'에서 꼭 확인하세요.
+
+etfs:
+  # ---------------- 미국 주식 ----------------
+  - code: "360750"
+    name: TIGER 미국S&P500
+    asset_class: 미국 대형주
+    irp: risky
+    roles: [core, tactical]
+    core_weight: 25
+    desc: >-
+      미국 대표 기업 500개(애플·마이크로소프트·엔비디아 등)에 한 번에 나눠 투자합니다.
+      미국 경제 전체에 투자하는 가장 기본적인 ETF이며, 환헤지를 하지 않아 달러가 오르면 수익에 더해집니다.
+    watch: 미국 경기·기업 실적, 원·달러 환율(환노출)
+
+  - code: "379810"
+    name: KODEX 미국나스닥100
+    asset_class: 미국 기술성장주
+    irp: risky
+    roles: [core, tactical]
+    core_weight: 10
+    proxy: "133690"
+    desc: >-
+      나스닥 상장 비금융 대형 기업 100개에 투자하며, 빅테크 비중이 큽니다.
+      S&P500보다 성장성은 높지만 하락할 때 더 크게 떨어집니다.
+      1주 가격이 TIGER 미국나스닥100보다 낮아 소액으로 매월 사기 좋습니다.
+    watch: 금리(금리가 오르면 성장주에 불리), AI·반도체 업황
+
+  - code: "133690"
+    name: TIGER 미국나스닥100
+    asset_class: 미국 기술성장주
+    irp: risky
+    roles: [proxy]
+    desc: 2010년 상장된 나스닥100 ETF. 1주 가격이 높아 과거 데이터 보충용으로만 씁니다.
+
+  - code: "458730"
+    name: TIGER 미국배당다우존스
+    asset_class: 미국 배당주
+    irp: risky
+    roles: [core, tactical]
+    core_weight: 10
+    proxy: "360750"
+    desc: >-
+      10년 이상 배당을 꾸준히 늘려 온 재무 건전한 미국 기업 100곳에 투자합니다(SCHD와 같은 지수).
+      기술주보다 덜 오르고 덜 떨어지는 '방어적 주식'이라 S&P500·나스닥과 섞으면 변동성이 줄어듭니다.
+    watch: 금융·에너지·필수소비재 비중, 금리 하락기 상대 성과
+
+  - code: "381180"
+    name: TIGER 미국필라델피아반도체나스닥
+    asset_class: 미국 반도체
+    irp: risky
+    roles: [tactical]
+    proxy: "133690"
+    desc: >-
+      미국 반도체 대표 기업 30곳(엔비디아·브로드컴·AMD 등)에 투자합니다.
+      AI 투자 사이클에 민감하고 변동성이 매우 커서 단기 바구니에서 추세가 좋을 때만 담습니다.
+    watch: AI 설비투자 전망, 반도체 재고 사이클, 수출 규제
+
+  - code: "251350"
+    name: KODEX 선진국MSCI World
+    asset_class: 선진국 주식
+    irp: risky
+    roles: [tactical]
+    proxy: "360750"
+    desc: >-
+      미국·일본·유럽 등 선진국 23개국 주식에 나눠 투자합니다(미국 약 70%).
+      미국에만 몰리는 것을 피하고 싶을 때 쓸 수 있는 분산형 ETF입니다.
+    watch: 미국 외 지역(유럽·일본) 경기, 달러 약세 여부
+
+  # ---------------- 아시아·국내 주식 ----------------
+  - code: "069500"
+    name: KODEX 200
+    asset_class: 한국 대형주
+    irp: risky
+    roles: [core, tactical]
+    core_weight: 5
+    desc: >-
+      코스피 대표 200개 기업(삼성전자·SK하이닉스 등)에 투자합니다.
+      원화 자산이라 달러 자산과 함께 담으면 환율 위험이 분산됩니다.
+    watch: 반도체 수출, 밸류업 정책, 외국인 수급
+
+  - code: "091170"
+    name: KODEX 은행
+    asset_class: 한국 은행주
+    irp: risky
+    roles: [tactical]
+    proxy: "069500"
+    desc: 국내 주요 은행·금융지주에 투자합니다. 배당과 주주환원 정책의 영향을 크게 받습니다.
+    watch: 국내 금리, 주주환원(배당·자사주) 정책, 부동산 PF 리스크
+
+  - code: "241180"
+    name: TIGER 일본니케이225
+    asset_class: 일본 주식
+    irp: risky
+    roles: [tactical]
+    proxy: "360750"
+    desc: 일본 대표 225개 기업에 투자합니다. 엔화 가치 변화가 수익률에 함께 반영됩니다.
+    watch: 엔화 환율, 일본은행 금리 정책, 기업 지배구조 개혁
+
+  - code: "453870"
+    name: TIGER 인도니프티50
+    asset_class: 인도 주식
+    irp: risky
+    roles: [tactical]
+    proxy: "360750"
+    desc: 인도 대표 50개 기업에 투자합니다. 장기 성장성은 높지만 밸류에이션이 비싸고 변동이 큽니다.
+    watch: 인도 성장률, 외국인 자금 흐름, 루피 환율
+
+  - code: "329200"
+    name: TIGER 리츠부동산인프라
+    asset_class: 국내 리츠
+    irp: risky
+    roles: [tactical]
+    proxy: "069500"
+    desc: 국내 상장 리츠(오피스·물류센터 등 임대 부동산)에 투자하며, 월분배금이 특징입니다.
+    watch: 국내 금리(금리가 내리면 유리), 공실률
+
+  # ---------------- 금 ----------------
+  - code: "411060"
+    name: ACE KRX금현물
+    asset_class: 금
+    irp: risky
+    roles: [core, tactical]
+    core_weight: 10
+    proxy: "132030"
+    desc: >-
+      한국거래소 금시장의 실제 금 가격을 따라가는 '현물' ETF입니다. 선물형 금 ETF는 IRP에서 살 수 없어서 이 종목을 씁니다.
+      주식과 다르게 움직이는 경우가 많아 위기 때 포트폴리오를 지켜 주는 역할을 하지만, 이자나 배당은 없습니다.
+    watch: 실질금리(내리면 유리), 달러 가치, 중앙은행 금 매입, 지정학 리스크
+
+  - code: "132030"
+    name: KODEX 골드선물(H)
+    asset_class: 금
+    irp: risky
+    roles: [proxy]
+    desc: 금 선물 ETF(2010년 상장). IRP 매수 불가라서 과거 데이터 보충용으로만 씁니다.
+
+  # ---------------- 채권 (안전자산) ----------------
+  - code: "453850"
+    name: ACE 미국30년국채액티브(H)
+    asset_class: 미국 장기채
+    irp: safe
+    roles: [core, tactical]
+    core_weight: 10
+    proxy: "305080"
+    desc: >-
+      만기 20년 이상 미국 국채에 투자하고 환헤지(H)를 해서 환율 영향을 줄였습니다.
+      경기 침체로 금리가 내려가면 크게 오르지만, 인플레이션으로 금리가 오르면 크게 떨어질 수 있습니다.
+    watch: 미국 물가, 연준 금리 경로, 미국 재정적자
+
+  - code: "305080"
+    name: TIGER 미국채10년선물
+    asset_class: 미국 중기채
+    irp: safe
+    roles: [proxy]
+    desc: 미국채 10년 선물 ETF(2018년 상장). IRP 매수 불가라서 과거 데이터 보충용으로만 씁니다.
+
+  - code: "148070"
+    name: KIWOOM 국고채10년
+    asset_class: 한국 장기채
+    irp: safe
+    roles: [tactical]
+    desc: 만기 10년 한국 국고채에 투자합니다. 한국은행이 금리를 내리는 시기에 유리합니다.
+    watch: 한국은행 기준금리, 국내 물가·성장률
+
+  - code: "114260"
+    name: KODEX 국고채3년
+    asset_class: 한국 단기채
+    irp: safe
+    roles: [core, tactical]
+    core_weight: 10
+    desc: 만기 3년 한국 국고채에 투자합니다. 가격 변동이 작고 이자가 쌓이는 안정적인 채권 ETF입니다.
+    watch: 한국은행 기준금리
+
+  - code: "273130"
+    name: KODEX 종합채권(AA-이상)액티브
+    asset_class: 한국 종합채권
+    irp: safe
+    roles: [core]
+    core_weight: 10
+    proxy: "114260"
+    desc: 국채·공사채·우량 회사채(AA- 이상)를 골고루 담은 채권 ETF입니다. 채권 시장 전체에 분산 투자하는 효과가 있습니다.
+    watch: 국내 금리, 회사채 신용 스프레드
+
+  - code: "472170"
+    name: TIGER 미국테크TOP10채권혼합
+    asset_class: 채권혼합(주식 30%대)
+    irp: safe
+    roles: [tactical]
+    proxy: "114260"
+    desc: >-
+      미국 빅테크 10개 기업 약 30%와 국내 채권 약 70%를 섞은 ETF입니다.
+      주식 비중이 40% 미만이라 IRP에서는 '안전자산'으로 분류되어, 위험자산 70% 한도와 별개로 담을 수 있습니다.
+    watch: 빅테크 주가, 국내 금리
+
+  # ---------------- 현금성 (안전자산) ----------------
+  - code: "357870"
+    name: TIGER CD금리투자KIS(합성)
+    asset_class: 현금성(CD금리)
+    irp: safe
+    roles: [core, tactical]
+    core_weight: 10
+    desc: >-
+      CD(양도성예금증서) 91일 금리만큼 매일 이자가 쌓이는 '파킹형' ETF로, 가격이 거의 떨어지지 않습니다.
+      시장이 불안할 때 대기 자금을 두는 곳이고, 최대 손실 -10% 목표를 지키는 완충 역할을 합니다.
+    watch: 한국은행 기준금리(내리면 이자도 줄어듦)

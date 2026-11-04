@@ -1,0 +1,34 @@
+# 가구 투자 프로필 — 값이 바뀌면 이 파일만 수정하면 됩니다.
+
+household:
+  current_age: 38            # 두 분 모두 30대 후반 기준
+  pension_start_age: 65      # 연금 수령 목표 시점
+
+risk:
+  max_drawdown: 0.10         # 목표 최대 손실(MDD) -10%
+  irp_risky_limit: 0.70      # IRP 위험자산 법정 한도 70%
+  irp_risky_buffer: 0.03     # 가격 변동 대비 여유분 → 실제 운용 상한 67%
+
+split:
+  long_term: 0.60            # 장기(전략) 비중
+  short_term: 0.40           # 단기(3개월~1년 전술) 비중
+
+accounts:
+  - id: me
+    label: 본인 IRP (신한투자증권)
+    broker: 신한투자증권
+    monthly_contribution: 400000
+    max_etfs_per_month: 5    # 한 달에 매수할 최대 종목 수(나머지는 다음 달로)
+  - id: spouse
+    label: 남편 IRP (우리투자증권)
+    broker: 우리투자증권
+    monthly_contribution: 200000
+    max_etfs_per_month: 3
+
+tactical:
+  top_n: 3                   # 단기 바구니에 담을 위험자산 ETF 개수
+  lookbacks: [63, 126, 252]  # 모멘텀 측정 기간(거래일): 3개월, 6개월, 12개월
+  trend_ma: 200              # 추세 필터: 200일 이동평균 위에 있을 때만 매수 후보
+
+risk_model:
+  history_days: 1260         # MDD 추정에 쓰는 과거 기간(약 5년, 2022년 하락장 포함)
