@@ -1,8 +1,14 @@
 {
   "as_of": "2026-11-04",
   "price_date": "2026-11-04",
-  "regime": null,
-  "indicators": {},
+  "regime": "확장·안정",
+  "indicators": {
+    "T10Y3M": 0.9270000457763672,
+    "VIX": 20.829999923706055,
+    "USDKRW": 1340.6800537109375,
+    "USDKRW_PCTL_3Y": 19.151670951156813,
+    "DGS10": 4.952000141143799
+  },
   "core": {
     "360750": 0.25,
     "379810": 0.1,
@@ -25,8 +31,8 @@
   "stats": {
     "mdd": -0.08255883709207334,
     "mdd_date": "2022-06-17",
-    "vol": 0.06797972292489346,
-    "cagr": 0.08731340184257341,
+    "vol": 0.06798104848328586,
+    "cagr": 0.08726681582324125,
     "start": "2021-09-07",
     "end": "2026-11-04"
   },
@@ -37,14 +43,8 @@
         {
           "code": "357870",
           "name": "TIGER CD금리투자KIS(합성)",
-          "shares": 2,
+          "shares": 3,
           "price": 58315.0
-        },
-        {
-          "code": "273130",
-          "name": "KODEX 종합채권(AA-이상)액티브",
-          "shares": 1,
-          "price": 112655.0
         },
         {
           "code": "458730",
@@ -55,17 +55,23 @@
         {
           "code": "360750",
           "name": "TIGER 미국S&P500",
-          "shares": 2,
-          "price": 25015.0
+          "shares": 3,
+          "price": 24995.0
         },
         {
-          "code": "411060",
-          "name": "ACE KRX금현물",
+          "code": "453850",
+          "name": "ACE 미국30년국채액티브(H)",
+          "shares": 4,
+          "price": 7070.0
+        },
+        {
+          "code": "379810",
+          "name": "KODEX 미국나스닥100",
           "shares": 1,
-          "price": 23800.0
+          "price": 24765.0
         }
       ],
-      "leftover": 6465.0
+      "leftover": 6605.0
     },
     {
       "account": "spouse",
@@ -86,35 +92,35 @@
           "code": "360750",
           "name": "TIGER 미국S&P500",
           "shares": 1,
-          "price": 25015.0
+          "price": 24995.0
         }
       ],
-      "leftover": 13145.0
+      "leftover": 13165.0
     }
   ],
   "tactical_table": [
     {
       "code": "360750",
-      "r1m": -0.027334940508593197,
-      "r63": -0.055396118117966964,
-      "r126": -0.040615172202193794,
-      "r252": 0.054684206088203124,
-      "score": -0.013775694743985878,
-      "vol": 0.11085566924149082,
+      "r1m": -0.028112605956917336,
+      "r63": -0.05615134808549205,
+      "r126": -0.041382219835851775,
+      "r252": 0.053840964668184554,
+      "score": -0.014564201084386422,
+      "vol": 0.11083553584593782,
       "above_ma": false,
-      "price": 25015.0,
+      "price": 24995.0,
       "history_days": 1528
     },
     {
       "code": "379810",
-      "r1m": -0.09194097616345065,
-      "r63": -0.07473044062231837,
-      "r126": -0.062133645955451344,
-      "r252": 0.051070141979232986,
-      "score": -0.028597981532845578,
-      "vol": 0.18329969033003665,
+      "r1m": -0.09322251107612323,
+      "r63": -0.07603626459724655,
+      "r126": -0.06345724766478844,
+      "r252": 0.04958677685950419,
+      "score": -0.0299689118008436,
+      "vol": 0.1832469699641799,
       "above_ma": false,
-      "price": 24800.0,
+      "price": 24765.0,
       "history_days": 1364
     },
     {
@@ -131,86 +137,98 @@
     },
     {
       "code": "381180",
-      "r1m": -0.1889709785878606,
-      "r63": -0.1590789202082521,
-      "r126": -0.08531869776724466,
-      "r252": 0.4565787382806292,
-      "score": 0.07072704010171083,
-      "vol": 0.39661050454305113,
+      "r1m": -0.19029817731374976,
+      "r63": -0.16045503543496709,
+      "r126": -0.08681551702631907,
+      "r252": 0.4541951374543143,
+      "score": 0.0689748616643427,
+      "vol": 0.3962991090565386,
       "above_ma": false,
-      "price": 36665.0,
+      "price": 36605.0,
       "history_days": 1364
     },
     {
-      "code": "069500",
-      "r1m": -0.2057640750670241,
-      "r63": -0.18212688421401357,
-      "r126": -0.11045830789402566,
-      "r252": 0.6693589286049701,
-      "score": 0.12559124549897696,
-      "vol": 0.5122870728817376,
+      "code": "251350",
+      "r1m": -0.024928624299460744,
+      "r63": -0.06380872610979971,
+      "r126": -0.046997726333195544,
+      "r252": 0.04953903938083304,
+      "score": -0.02042247102072074,
+      "vol": 0.11330038604272372,
       "above_ma": false,
-      "price": 88875.0,
+      "price": 36885.0,
+      "history_days": 2504
+    },
+    {
+      "code": "069500",
+      "r1m": -0.20692582663092052,
+      "r63": -0.18332321057184398,
+      "r126": -0.11175946592467301,
+      "r252": 0.6669171096376716,
+      "score": 0.12394481104705153,
+      "vol": 0.512322706844385,
+      "above_ma": false,
+      "price": 88745.0,
       "history_days": 3000
     },
     {
       "code": "091170",
-      "r1m": -0.10370747865970187,
-      "r63": -0.09184793132382363,
-      "r126": -0.0912613834528192,
-      "r252": 0.2350772471910112,
-      "score": 0.01732264413812279,
-      "vol": 0.26188916874628926,
+      "r1m": -0.10625557395846608,
+      "r63": -0.09442974246433877,
+      "r126": -0.09384486210682685,
+      "r252": 0.231566011235955,
+      "score": 0.014430468888263123,
+      "vol": 0.26142541684719983,
       "above_ma": false,
-      "price": 14070.0,
+      "price": 14030.0,
       "history_days": 3000
     },
     {
       "code": "241180",
-      "r1m": -0.10976468930534033,
-      "r63": -0.09289303661162962,
-      "r126": -0.052347382630868466,
-      "r252": 0.15014927546785106,
-      "score": 0.001636285408450992,
-      "vol": 0.2431802874724247,
+      "r1m": -0.11201916302663095,
+      "r63": -0.09519023689877959,
+      "r126": -0.05474726263686813,
+      "r252": 0.14723658341221868,
+      "score": -0.0009003053744763475,
+      "vol": 0.24370672334491794,
       "above_ma": false,
-      "price": 31590.0,
+      "price": 31510.0,
       "history_days": 2598
     },
     {
       "code": "453870",
-      "r1m": 0.06454720616570331,
-      "r63": -0.08184461985874536,
-      "r126": -0.10901467505241091,
-      "r252": -0.2172557908904158,
-      "score": -0.13603836193385735,
-      "vol": 0.1530502288388258,
+      "r1m": 0.06502890173410414,
+      "r63": -0.08142916493560448,
+      "r126": -0.10861151427189164,
+      "r252": -0.21690160799036617,
+      "score": -0.1356474290659541,
+      "vol": 0.15314583246457858,
       "above_ma": false,
-      "price": 11050.0,
+      "price": 11055.0,
       "history_days": 865
     },
     {
       "code": "329200",
-      "r1m": -0.05756292050834788,
-      "r63": -0.03643312101910823,
-      "r126": -0.19188034188034186,
-      "r252": -0.05189270493858111,
-      "score": -0.0934020559460104,
-      "vol": 0.10109705976151555,
+      "r1m": -0.05556939945178174,
+      "r63": -0.03439490445859872,
+      "r126": -0.19017094017094016,
+      "r252": -0.049887189771872675,
+      "score": -0.09148434480047052,
+      "vol": 0.1013919317013708,
       "above_ma": false,
-      "price": 3782.0,
+      "price": 3790.0,
       "history_days": 1789
     },
     {
       "code": "411060",
-      "r1m": -0.0672153635116598,
-      "r63": -0.08742331288343563,
-      "r126": -0.21941620203345358,
-      "r252": -0.1443465755887111,
-      "score": -0.15039536350186677,
-      "vol": 0.21955624574124574,
+      "r1m": -0.06682343719380757,
+      "r63": -0.08703987730061347,
+      "r126": -0.21908822564775332,
+      "r252": -0.1439870573431602,
+      "score": -0.15003838676384232,
+      "vol": 0.21964857081591913,
       "above_ma": false,
-      "price": 23800.0,
+      "price": 23810.0,
       "history_days": 1194
     },
     {
@@ -227,38 +245,38 @@
     },
     {
       "code": "148070",
-      "r1m": 0.03275952505841406,
-      "r63": 0.03414028553693349,
-      "r126": 0.014473745842896513,
-      "r252": -0.03988012909174732,
-      "score": 0.002911300762694228,
-      "vol": 0.06366869689960646,
+      "r1m": 0.03261647036383586,
+      "r63": 0.03399703958363176,
+      "r126": 0.014333224038596715,
+      "r252": -0.0400131219633294,
+      "score": 0.002772380552966358,
+      "vol": 0.06366221842635192,
       "above_ma": true,
-      "price": 108290.0,
+      "price": 108275.0,
       "history_days": 3000
     },
     {
       "code": "114260",
-      "r1m": 0.009932972623758474,
-      "r63": 0.012221772561715971,
-      "r126": 0.016582669484636714,
-      "r252": 0.0061951886716549165,
-      "score": 0.0116665435726692,
-      "vol": 0.019982016242490543,
+      "r1m": 0.010175240248728068,
+      "r63": 0.012464589235127388,
+      "r126": 0.016826532271175365,
+      "r252": 0.006436559658862251,
+      "score": 0.011909227055055002,
+      "vol": 0.01999394222662222,
       "above_ma": true,
-      "price": 62530.0,
+      "price": 62545.0,
       "history_days": 3000
     },
     {
       "code": "472170",
-      "r1m": -0.030659536541889465,
-      "r63": -0.015568428674873291,
-      "r126": -0.047302032235459035,
-      "r252": -0.02194244604316542,
-      "score": -0.02827096898449925,
-      "vol": 0.10246944314501043,
+      "r1m": -0.031016042780748654,
+      "r63": -0.015930485155684293,
+      "r126": -0.047652417659425406,
+      "r252": -0.022302158273381334,
+      "score": -0.028628353696163678,
+      "vol": 0.10234872359953712,
       "above_ma": false,
-      "price": 13595.0,
+      "price": 13590.0,
       "history_days": 708
     },
     {
@@ -275,17 +293,10 @@
     }
   ],
   "warnings": [
-    "251350의 실제 종목명은 'KODEX MSCI선진국'으로 설정('KODEX 선진국MSCI World')과 달라 추천에서 제외했습니다. config/etf_universe.yaml을 확인하세요.",
-    "FRED DGS10: 데이터 수집 실패: https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS10&cosd=2010-01-01 (HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=15))",
-    "FRED DGS2: 데이터 수집 실패: https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS2&cosd=2010-01-01 (HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=15))",
-    "FRED T10Y3M: 데이터 수집 실패: https://fred.stlouisfed.org/graph/fredgraph.csv?id=T10Y3M&cosd=2010-01-01 (HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=15))",
-    "FRED FEDFUNDS: 데이터 수집 실패: https://fred.stlouisfed.org/graph/fredgraph.csv?id=FEDFUNDS&cosd=2010-01-01 (HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=15))",
-    "FRED CPIAUCSL: 데이터 수집 실패: https://fred.stlouisfed.org/graph/fredgraph.csv?id=CPIAUCSL&cosd=2010-01-01 (HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=15))",
-    "FRED UNRATE: 데이터 수집 실패: https://fred.stlouisfed.org/graph/fredgraph.csv?id=UNRATE&cosd=2010-01-01 (HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=15))",
-    "FRED VIXCLS: 데이터 수집 실패: https://fred.stlouisfed.org/graph/fredgraph.csv?id=VIXCLS&cosd=2010-01-01 (HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=15))",
-    "FRED BAMLH0A0HYM2: 데이터 수집 실패: https://fred.stlouisfed.org/graph/fredgraph.csv?id=BAMLH0A0HYM2&cosd=2010-01-01 (HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=15))",
-    "FRED DEXKOUS: 데이터 수집 실패: https://fred.stlouisfed.org/graph/fredgraph.csv?id=DEXKOUS&cosd=2010-01-01 (HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=15))",
-    "FRED DFII10: 데이터 수집 실패: https://fred.stlouisfed.org/graph/fredgraph.csv?id=DFII10&cosd=2010-01-01 (HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=15))",
-    "FRED IRLTLT01KRM156N: 데이터 수집 실패: https://fred.stlouisfed.org/graph/fredgraph.csv?id=IRLTLT01KRM156N&cosd=2010-01-01 (HTTPSConnectionPool(host='fred.stlouisfed.org', port=443): Read timed out. (read timeout=15))"
+    "FRED에서 11개 지표를 받지 못했습니다: DGS10, DGS2, T10Y3M, FEDFUNDS, CPIAUCSL, UNRATE, VIXCLS, BAMLH0A0HYM2, DEXKOUS, DFII10, IRLTLT01KRM156N",
+    "대체 데이터: DGS10 → 야후 ^TNX로 대체",
+    "대체 데이터: VIXCLS → 야후 ^VIX로 대체",
+    "대체 데이터: DEXKOUS → 야후 KRW=X로 대체",
+    "대체 데이터: T10Y3M → 야후 ^TNX - ^IRX로 대체"
   ]
 }
