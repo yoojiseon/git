@@ -20,6 +20,7 @@ concurrency:
 jobs:
   report:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
 
@@ -35,6 +36,7 @@ jobs:
         run: python -m pytest -q
 
       - name: 리포트 생성
+        timeout-minutes: 12
         run: |
           if [ "${{ github.event_name }}" = "schedule" ] || [ "${{ inputs.assume_last_plan }}" = "true" ]; then
             python -m pension_agent --assume-last-plan

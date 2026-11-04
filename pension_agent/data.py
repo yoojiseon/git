@@ -13,6 +13,7 @@ import datetime as dt
 import hashlib
 import io
 import re
+import sys
 import time
 import urllib.parse
 import xml.etree.ElementTree as ET
@@ -33,7 +34,11 @@ class DataError(RuntimeError):
     pass
 
 
-def _fetch(url: str, *, timeout: int = 20, retries: int = 3, use_cache: bool = True) -> bytes:
+def _log(msg: str) -> None:
+    print(msg, file=sys.stderr, flush=True)
+
+
+def _fetch(url: str, *, timeout: int = 15, retries: int = 2, use_cache: bool = True) -> bytes:
     key = hashlib.sha1(url.encode()).hexdigest()[:16]
     cache_file = CACHE_DIR / dt.date.today().isoformat() / key
     if use_cache and cache_file.exists():
@@ -41,15 +46,18 @@ def _fetch(url: str, *, timeout: int = 20, retries: int = 3, use_cache: bool = T
 
     last: Exception | None = None
     for attempt in range(retries):
+        started = time.time()
         try:
-            resp = requests.get(url, headers=HEADERS, timeout=timeout)
+            resp = requests.get(url, headers=HEADERS, timeout=(5, timeout))
             resp.raise_for_status()
             if use_cache:
                 cache_file.parent.mkdir(parents=True, exist_ok=True)
                 cache_file.write_bytes(resp.content)
+            _log(f"  OK {time.time() - started:4.1f}s {url[:90]}")
             return resp.content
         except requests.RequestException as exc:  # 네트워크 오류는 재시도
             last = exc
+            _log(f"  FAIL {time.time() - started:4.1f}s {url[:90]} ({type(exc).__name__})")
             if attempt < retries - 1:
                 time.sleep(2 ** attempt)
     raise DataError(f"데이터 수집 실패: {url} ({last})")
