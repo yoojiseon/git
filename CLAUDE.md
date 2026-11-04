@@ -12,7 +12,18 @@
 - `reports/YYYY-MM.md`, `reports/YYYY-MM.json` — 월간 리포트와 수치 스냅샷
 - 로직 설명: `docs/설계.md`
 
-## 월간 리포트 절차 (자동 실행·요청 시 공통)
+## 실행 구조
+
+Claude 클라우드 환경은 데이터 사이트(FRED·네이버·구글뉴스) 접속이 막혀 있을 수 있어서,
+**수치 리포트는 GitHub Actions(`.github/workflows/monthly-report.yml`)가 만들고 Claude는 해설을 덧붙입니다.**
+
+- 매월 1일 09:07(KST) Actions가 `python -m pension_agent --assume-last-plan` 실행 → `reports/`를 `master`에 커밋
+- 매월 1일 오전, Claude 자동 실행이 리포트를 읽고 웹 검색으로 해설 작성 → `master`에 커밋·푸시
+- 요청 시: GitHub Actions의 `월간 IRP 리포트` 워크플로를 `workflow_dispatch`로 실행(GitHub MCP `actions_run_trigger`,
+  ref `master`)하고, 완료되면 `git pull` 후 아래 4~7단계를 진행합니다.
+- 데이터 사이트에 직접 접속할 수 있는 환경이라면 아래 1~2단계를 로컬에서 실행해도 됩니다.
+
+## 월간 리포트 절차
 
 1. `pip install -q -r requirements.txt`
 2. `python -m pension_agent --assume-last-plan`
@@ -33,7 +44,7 @@
    - 출처 링크 목록
    규칙: 스크립트가 계산한 비중·수량은 바꾸지 않습니다. 다르게 판단되면 "참고 의견"으로만 적습니다.
    특정 종목을 확정적으로 권유하는 표현("꼭 사세요")은 쓰지 않습니다.
-6. `reports/`와 `config/holdings.yaml`을 커밋하고 작업 브랜치에 푸시합니다.
+6. `reports/`와 `config/holdings.yaml`을 커밋하고 `master`에 푸시합니다(푸시 전 `git pull --rebase`).
    커밋 메시지 예: `리포트: 2026-12 월간 IRP 투자 계획`
 7. 사용자에게 요약(국면, 계좌별 매수 목록, 해설 핵심 3줄)과 리포트 경로를 알려 줍니다.
 

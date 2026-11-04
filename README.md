@@ -24,7 +24,10 @@ python -m pytest -q                          # 테스트(네트워크 불필요)
 | `--month 2026-12` | 리포트 파일명 지정 |
 | `--no-news` | 뉴스 수집 생략 |
 
-필요한 네트워크 도메인: `fred.stlouisfed.org`, `fchart.stock.naver.com`, `news.google.com`
+자동 실행: GitHub Actions `월간 IRP 리포트` 워크플로가 매월 1일 09:07(KST)에 리포트를 만들고,
+이어서 Claude가 최신 뉴스 해설을 덧붙입니다. Actions 탭의 **Run workflow**로 언제든 수동 실행할 수 있습니다.
+
+로컬 실행 시 필요한 네트워크 도메인: `fred.stlouisfed.org`, `fchart.stock.naver.com`, `news.google.com`
 
 ## 리포트 구성
 

@@ -1,0 +1,55 @@
+name: 월간 IRP 리포트
+
+on:
+  schedule:
+    - cron: "7 0 1 * *"   # 매월 1일 09:07 (한국 시간) — GitHub 사정으로 조금 늦어질 수 있음
+  workflow_dispatch:       # Actions 탭이나 Claude가 원할 때 수동 실행
+    inputs:
+      assume_last_plan:
+        description: "지난 리포트대로 샀다고 가정하고 보유 수량 갱신"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: monthly-report
+  cancel-in-progress: false
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: 패키지 설치
+        run: pip install -r requirements.txt
+
+      - name: 테스트
+        run: python -m pytest -q
+
+      - name: 리포트 생성
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ] || [ "${{ inputs.assume_last_plan }}" = "true" ]; then
+            python -m pension_agent --assume-last-plan
+          else
+            python -m pension_agent
+          fi
+
+      - name: 리포트 커밋
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports config/holdings.yaml 2>/dev/null || git add reports
+          if git diff --cached --quiet; then
+            echo "변경 없음"
+          else
+            git commit -m "리포트: $(TZ=Asia/Seoul date +%Y-%m) 월간 IRP 투자 계획 (자동 생성)"
+            git push
+          fi
